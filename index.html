@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicle List</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) auto;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        form input,
+        form button {
+            font-size: 16px;
+            padding: 8px;
+        }
+
+        #message {
+            min-height: 20px;
+        }
+
+        #loadVehiclesButton {
+            display: block;
+            margin: 0 0 16px;
+            padding: 12px 22px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+ 
+        #vehicleSearchInput {
+            font-size: 16px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+       
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd; 
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Vehicle Database</h1>
+
+        <h2>Register Vehicle</h2>
+      
+        <form id="vehicleForm">
+            <input type="text" id="plate_number" placeholder="Plate Number" required>
+            <input type="text" id="owner" placeholder="Owner" required>
+            <input type="text" id="vehicle_type" placeholder="Vehicle Type" required>
+            <input type="text" id="color" placeholder="Color" required></input>
+            <button type="submit">Register</button>
+        </form>
+        <p id="message"></p>
+
+        <h1>Vehicles</h1>
+        <button type="button" id="loadVehiclesButton">Load Vehicles</button>
+        <input type="text" id="vehicleSearchInput" onkeyup="searchTable()" placeholder="Search ID, plate_number, owner, vehicle type or color...">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Plate Number</th>
+                    <th>Owner</th>
+                    <th>Vehicle Type</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody id="vehicletable"></tbody>
+        </table>
+    </div>
+
+    <script>
+       
+        async function loadVehicle() {
+            const response = await fetch("/api/vehicles");
+            const vehiclesData = await response.json();
+            const table = document.getElementById("vehicletable");
+
+            table.innerHTML = "";
+
+            vehiclesData.forEach(vehicle => {
+                const row = document.createElement("tr");
+
+                const idCell = document.createElement("td");
+                idCell.textContent = vehicle.id;
+                const plate_numberCell = document.createElement("td");
+                plate_numberCell.textContent = vehicle.plate_number;
+                const ownerCell = document.createElement("td");
+                ownerCell.textContent = vehicle.owner;
+                const vehicle_typeCell = document.createElement("td");
+                vehicle_typeCell.textContent = vehicle.vehicle_type;
+                const colorCell = document.createElement("td");
+                colorCell.textContent = vehicle.color;
+                row.appendChild(idCell);
+                row.appendChild(plate_numberCell);
+                row.appendChild(ownerCell);
+                row.appendChild(vehicle_typeCell);
+                row.appendChild(colorCell);
+                table.appendChild(row);
+            });
+        }
+
+      
+        document.getElementById("loadVehiclesButton").addEventListener("click", loadVehicle);
+
+        document.getElementById("vehicleForm").addEventListener("submit", async event => {
+            event.preventDefault();
+
+            
+            const response = await fetch("/api/vehicles", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    plate_number: document.getElementById("plate_number").value,
+                    owner: document.getElementById("owner").value,
+                    vehicle_type: document.getElementById("vehicle_type").value,
+                    color: document.getElementById("color").value
+                })
+            });
+
+            const result = await response.json();
+            const message = document.getElementById("message");
+            message.textContent = response.ok ? "Vehicles added successfully" : result.message;
+
+            if (response.ok) {
+                event.target.reset();
+                loadVehicle(); 
+            }
+        });
+
+         function searchTable() {
+            const filter = document.getElementById("vehicleSearchInput").value.toLowerCase();
+            
+            document.querySelectorAll("#vehicletable tr").forEach(row => {
+           
+                const matches = row.textContent.toLowerCase().includes(filter);
+                
+                row.style.display = matches ? "" : "none";
+            });
+    }
+
+        window.onload = loadVehicle;
+    </script>
+
+
+</body>
+</html>

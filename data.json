@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "plate_number": "4530",
+    "owner": "Ronald",
+    "vehicle_type": "Car",
+    "color": "Blue"
+  },
+  {
+    "id": 2,
+    "plate_number": "8342",
+    "owner": "Humphrey",
+    "vehicle_type": "Motorcycle",
+    "color": "Red"
+  },
+  {
+    "id": 3,
+    "plate_number": "0045",
+    "owner": "Gabriel",
+    "vehicle_type": "Bicycle",
+    "color": "Black"
+  },
+  {
+    "id": 4,
+    "plate_number": "3425",
+    "owner": "Justin",
+    "vehicle_type": "Electric Scooter",
+    "color": "White"
+  },
+  {
+    "id": 5,
+    "plate_number": "4531",
+    "owner": "Ronald",
+    "vehicle_type": "Car",
+    "color": "Blue"
+  },
+  {
+    "id": 6,
+    "plate_number": "5203",
+    "owner": "Rob",
+    "vehicle_type": "Ebike",
+    "color": "Red"
+  }
+]
